@@ -1,0 +1,19 @@
+{
+  "mejor_epoch": 4,
+  "val_rmse": 3.759212870516379,
+  "test_rmse": 2.7738033176306485,
+  "test_mae": 2.3633716106414795,
+  "test_r2": 0.0,
+  "cfg": {
+    "epochs": 50,
+    "batch_size": 32,
+    "lr": 0.0001,
+    "lr_backbone": 1e-05,
+    "weight_decay": 0.0001,
+    "dropout_p": 0.5,
+    "patience": 7,
+    "num_workers": 0,
+    "seed": 42,
+    "device": "cpu"
+  }
+}
