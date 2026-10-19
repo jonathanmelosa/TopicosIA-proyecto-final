@@ -81,9 +81,9 @@ from shapely.geometry import Point
 # PARÁMETROS — deben coincidir con los de extract_imagenes.py
 # =============================================================================
 
-API_KEY        = "AIzaSyApmNVPLaiGL330cLNdTFc6xvgqjShRTKw"
-RUTA_BASE      = "/Users/macbook/Documents/Documentos/MeCA/202601/Seminario de investigación/Literatura/lit_imagenes"
-RUTA_SHAPEFILE = "/Users/macbook/Documents/Documentos/MeCA/202601/Seminario de investigación/Literatura/lit_imagenes/loca/Loca.shp"
+API_KEY        = os.environ.get("GSV_API_KEY", "")  # export GSV_API_KEY="..." (Street View Static API)
+RUTA_BASE      = os.environ.get("RUTA_BASE", os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data"))
+RUTA_SHAPEFILE = os.path.join(RUTA_BASE, "loca", "Loca.shp")
 LOCALIDAD      = "USME"
 
 # Espaciado de la grilla fina. Debe ser menor que DELTA_M del script original.
