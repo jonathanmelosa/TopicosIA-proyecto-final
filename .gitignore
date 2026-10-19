@@ -1,0 +1,14 @@
+# Environment
+venv/
+__pycache__/
+.DS_Store
+
+# Data and model weights (not redistributed)
+00_data/
+02_outputs/modelos/*.pt
+
+# Local-only files
+README_es_original.md
+informe_metodologico_1.html
+informe_metodologico_1.tex
+diseño_detallado_1.pdf

@@ -1,38 +1,34 @@
-# Street View image collection for poverty prediction (Usme, Bogotá)
+# Poverty prediction from Google Street View images (Usme, Bogotá)
 
-Data-collection pipeline for a course project on predicting poverty from street-level imagery: Google Street View photos of the Usme locality (Bogotá) are later used to train a convolutional neural network against DANE poverty measures. Course: MECA 4107, *Big Data and Machine Learning for Applied Economics*, Universidad de los Andes (2026). The exercise design is described in `diseño_detallado.pdf` (Spanish).
+Final course project, Master's in Applied Economics (MeCA), Universidad de los Andes (2026). Can street-level images predict how poor an area is? The project collects Google Street View images along the road network of Usme (Bogotá), links each image to the multidimensional poverty (IPM) incidence of its UPZ from the 2021 Bogotá Multipurpose Survey (EM 2021), and fine-tunes a ResNet18 to predict it.
 
-This repository covers the image-collection stage. Code comments are in Spanish.
+Code, comments and the methodological report (`informe_metodologico_1.md`) are in Spanish. The original exercise design is in `diseño_detallado.pdf`.
 
-## Scripts (`01_code/`)
+## Result
 
-| Script | What it does |
-|---|---|
-| `extract_imagenes.py` | Samples points along the OpenStreetMap road network of the locality and downloads Street View images asynchronously. |
-| `verificar_cobertura.py` | Checks whether coverage is exhausted: re-queries points without an image using a wider search radius and reports the share of "missed" images. |
-| `refinar_muestreo.py` | Run only if the check finds missed images: adds a finer sampling grid in uncovered gaps and merges results into the same state file. |
+The model does not beat a naive mean prediction on unseen UPZs: test R² = 0.00, RMSE = 2.77 pp, MAE = 2.36 pp (`02_outputs/modelos/metricas.json`). The report explains why. Usme has only 5–7 UPZs, so with a spatial split the training set contains 3–4 distinct target values; the target is an area-level average assigned to every image (ecological fallacy); and consecutive images are highly autocorrelated. It also lays out the changes needed to get a positive R² (more localities, a more granular target, target normalization, spatial k-fold validation).
 
-## Design choices
+## Pipeline
 
-- **Road network instead of a uniform grid.** Street View only exists on streets, so most points on a uniform grid return no image. Sampling along OSM roads (OSMnx) cuts the number of queries sharply and raises the hit rate.
-- **Asynchronous requests (aiohttp).** A single thread handles 40+ concurrent requests.
-- **Resumable.** Progress is saved periodically to a pickle; an interrupted run resumes with only the pending points.
-- **Coverage diagnosis before refinement.** Points without an image are re-queried with a radius proportional to the sampling distance (3× spacing), so refinement is only run when it can add images.
+| Step | Script | What it does |
+|---|---|---|
+| 0a | `01_code/00_descarga/extract_imagenes.py` | Samples points along the OpenStreetMap road network (OSMnx) and downloads Street View images asynchronously (aiohttp); resumable. |
+| 0b | `01_code/00_descarga/verificar_cobertura.py` | Re-queries points without an image with a wider radius to check whether coverage is exhausted. |
+| 0c | `01_code/00_descarga/refinar_muestreo.py` | Adds a finer sampling grid only in uncovered gaps, if the check recommends it. |
+| 0d | `01_code/00_descarga/fetch_fechas.py` | Retrieves the capture date of each image (to keep images consistent in time with EM 2021). |
+| 0e | `01_code/00_descargar_datos.py` | Downloads the UPZ boundaries and the EM 2021 microdata from Bogotá's open data portal and builds poverty indicators by UPZ. |
+| 1 | `01_code/01_cruce_geografico.py` | Spatial join: assigns each image the IPM of its UPZ. |
+| 2 | `01_code/02_dataset.py` | PyTorch `Dataset` with ImageNet normalization and data augmentation. |
+| 3 | `01_code/03_split.py` | 70/15/15 split by whole UPZs to avoid spatial leakage. |
+| 4 | `01_code/04_modelo.py` | ResNet18 (ImageNet weights) with a new regression head. |
+| 5 | `01_code/05_entrenamiento.py` | MSE loss, Adam, weight decay, dropout, gradient clipping and early stopping. |
+| 6 | `01_code/06_interpretabilidad.py` | Grad-CAM and Integrated Gradients attributions. |
 
 ## Setup
 
 ```bash
-pip install geopandas osmnx aiohttp requests shapely scikit-learn scipy matplotlib pandas numpy
-export GSV_API_KEY="your-key"          # Google Street View Static API
-export RUTA_BASE="/path/to/data"       # optional; defaults to ./data next to 01_code/
+pip install -r requirements.txt
+export GSV_API_KEY="your-key"   # Google Street View Static API, only for step 0
 ```
 
-`RUTA_BASE` must contain the Bogotá localities shapefile at `loca/Loca.shp` (column `LocNombre`). Downloaded images and the sampling state are written there. Images are not included in this repository because Street View terms do not allow redistribution.
-
-## Run order
-
-```bash
-python 01_code/extract_imagenes.py
-python 01_code/verificar_cobertura.py
-python 01_code/refinar_muestreo.py     # only if the check recommends it
-```
+Paths are relative to the project root. The data (`00_data/`: about 24,500 Street View images and the EM 2021 microdata) and the trained model weights are not included: Street View terms do not allow redistributing images, and the survey can be downloaded with step 0e.

@@ -1,0 +1,61 @@
+# =============================================================================
+# Dependencias del proyecto
+# Predicción de Pobreza con Google Street View — USME, Bogotá
+# MECA 4107 — Big Data y ML para Economía Aplicada
+# =============================================================================
+#
+# Instalación completa:
+#   pip install -r requirements.txt
+#
+# Instalación solo para la fase de descarga (sin torch):
+#   pip install geopandas osmnx aiohttp requests shapely scikit-learn matplotlib
+#
+# Nota macOS Apple Silicon (M1/M2/M3):
+#   torch y torchvision se instalan con aceleración MPS automáticamente.
+#   Si hay problemas con osmnx, instalar con conda primero:
+#   conda install -c conda-forge osmnx
+
+# ---------------------------------------------------------------------------
+# Descarga de imágenes Street View (00_descarga/)
+# ---------------------------------------------------------------------------
+aiohttp>=3.9.0
+requests>=2.31.0
+
+# ---------------------------------------------------------------------------
+# Geoespacial
+# ---------------------------------------------------------------------------
+geopandas>=0.14.0
+osmnx>=1.7.0
+shapely>=2.0.0
+
+# ---------------------------------------------------------------------------
+# Ciencia de datos
+# ---------------------------------------------------------------------------
+numpy>=1.26.0
+pandas>=2.1.0
+scikit-learn>=1.3.0
+scipy>=1.11.0
+
+# ---------------------------------------------------------------------------
+# Visualización
+# ---------------------------------------------------------------------------
+matplotlib>=3.8.0
+
+# ---------------------------------------------------------------------------
+# Deep Learning (PASO 4–6)
+# ---------------------------------------------------------------------------
+torch>=2.1.0
+torchvision>=0.16.0
+Pillow>=10.0.0
+
+# ---------------------------------------------------------------------------
+# Lectura de Excel (para datos de la Encuesta Multipropósito)
+# ---------------------------------------------------------------------------
+openpyxl>=3.1.0
+xlrd>=2.0.1
+
+# ---------------------------------------------------------------------------
+# Utilidades
+# ---------------------------------------------------------------------------
+tqdm>=4.66.0
+pypdf>=3.17.0
