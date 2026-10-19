@@ -45,9 +45,9 @@ from sklearn.metrics import DistanceMetric # distancia Haversine entre puntos
 # PARÁMETROS — edita solo esta sección
 # =============================================================================
 
-API_KEY        = "AIzaSyApmNVPLaiGL330cLNdTFc6xvgqjShRTKw"  # ← clave Google Maps Platform
-RUTA_BASE      = "/Users/macbook/Documents/Documentos/MeCA/202601/Seminario de investigación/Literatura/lit_imagenes"
-RUTA_SHAPEFILE = "/Users/macbook/Documents/Documentos/MeCA/202601/Seminario de investigación/Literatura/lit_imagenes/loca/Loca.shp"
+API_KEY        = os.environ.get("GSV_API_KEY", "")  # export GSV_API_KEY="..." (Street View Static API)
+RUTA_BASE      = os.environ.get("RUTA_BASE", os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data"))
+RUTA_SHAPEFILE = os.path.join(RUTA_BASE, "loca", "Loca.shp")
 LOCALIDAD      = "USME"    # nombre exacto en la columna LocNombre del shapefile
 
 DELTA_M        = 50        # metros entre puntos consecutivos sobre cada calle
