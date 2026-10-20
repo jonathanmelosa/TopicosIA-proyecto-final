@@ -368,14 +368,14 @@ def analizar(n_gradcam: int = 8, n_shap: int = 4) -> None:
 
     # Seleccionar muestra estratificada: mitad con IPM alto, mitad con IPM bajo
     mitad    = max(n_gradcam // 2, 1)
-    df_alto  = df_test.nlargest(mitad,  "ipm")
-    df_bajo  = df_test.nsmallest(mitad, "ipm")
+    df_alto  = df_test.nlargest(mitad,  "inc_ipm_pct")
+    df_bajo  = df_test.nsmallest(mitad, "inc_ipm_pct")
     df_muestra = pd.concat([df_alto, df_bajo]).sample(
         min(n_gradcam, len(df_test)), random_state=42
     ).reset_index(drop=True)
 
     print(f"\n  Imágenes para Grad-CAM: {len(df_muestra)}")
-    print(f"  Rango de IPM: [{df_muestra['ipm'].min():.1f}, {df_muestra['ipm'].max():.1f}]")
+    print(f"  Rango de IPM: [{df_muestra['inc_ipm_pct'].min():.1f}, {df_muestra['inc_ipm_pct'].max():.1f}]")
 
     # -------------------------------------------------------------------------
     # GRAD-CAM
@@ -414,8 +414,8 @@ def analizar(n_gradcam: int = 8, n_shap: int = 4) -> None:
         ax_orig = axes[row_img, col]
         ax_orig.imshow(img_np)
         ax_orig.set_title(
-            f"IPM real={fila['ipm']:.1f}  pred={ipm_pred:.1f}\n"
-            f"Error={abs(ipm_pred - fila['ipm']):.1f}",
+            f"IPM real={fila['inc_ipm_pct']:.1f}  pred={ipm_pred:.1f}\n"
+            f"Error={abs(ipm_pred - fila['inc_ipm_pct']):.1f}",
             fontsize=8,
         )
         ax_orig.axis("off")
@@ -426,7 +426,7 @@ def analizar(n_gradcam: int = 8, n_shap: int = 4) -> None:
         ax_cam.set_title("Grad-CAM", fontsize=8)
         ax_cam.axis("off")
 
-        print(f"  [{i+1}/{len(df_muestra)}] IPM real={fila['ipm']:.1f}  pred={ipm_pred:.1f}")
+        print(f"  [{i+1}/{len(df_muestra)}] IPM real={fila['inc_ipm_pct']:.1f}  pred={ipm_pred:.1f}")
 
     grad_cam.limpiar()
 
@@ -494,7 +494,7 @@ def analizar(n_gradcam: int = 8, n_shap: int = 4) -> None:
         # Columna 1: imagen original
         axes[i, 0].imshow(img_np)
         axes[i, 0].set_title(
-            f"Original\nIPM real={fila['ipm']:.1f}  pred={ipm_pred:.1f}",
+            f"Original\nIPM real={fila['inc_ipm_pct']:.1f}  pred={ipm_pred:.1f}",
             fontsize=9,
         )
         axes[i, 0].axis("off")
@@ -511,7 +511,7 @@ def analizar(n_gradcam: int = 8, n_shap: int = 4) -> None:
         axes[i, 2].set_title("Imagen + SHAP overlay", fontsize=9)
         axes[i, 2].axis("off")
 
-        print(f"  [{i+1}/{n_shap}] IPM real={fila['ipm']:.1f}  pred={ipm_pred:.1f}  "
+        print(f"  [{i+1}/{n_shap}] IPM real={fila['inc_ipm_pct']:.1f}  pred={ipm_pred:.1f}  "
               f"atrib max={atrib.max():.4f}")
 
     fig.suptitle(
