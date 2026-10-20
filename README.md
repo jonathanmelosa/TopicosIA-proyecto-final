@@ -1,6 +1,6 @@
 # Poverty prediction from Google Street View images (Usme, Bogotá)
 
-Final course project, Master's in Applied Economics (MeCA), Universidad de los Andes (2026). Can street-level images predict how poor an area is? The project collects Google Street View images along the road network of Usme (Bogotá), links each image to the multidimensional poverty (IPM) incidence of its UPZ from the 2021 Bogotá Multipurpose Survey (EM 2021), and fine-tunes a ResNet18 to predict it.
+Final project for *Tópicos de Inteligencia Artificial*, Master's in Applied Economics (MeCA), Universidad de los Andes (2026). Can street-level images predict how poor an area is? The project collects Google Street View images along the road network of Usme (Bogotá), links each image to the multidimensional poverty (IPM) incidence of its UPZ from the 2021 Bogotá Multipurpose Survey (EM 2021), and fine-tunes a ResNet18 to predict it.
 
 Code, comments and the methodological report (`informe_metodologico_1.md`) are in Spanish. The original exercise design is in `diseño_detallado.pdf`.
 
